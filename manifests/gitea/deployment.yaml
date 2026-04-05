@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: gitea
+  name: gitea
+  namespace: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  serviceName: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: America/Toronto
+        image: docker.gitea.com/gitea:1.25.4
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /api/healthz
+            port: http
+          initialDelaySeconds: 200
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: gitea
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 22
+          name: ssh
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: gitea-pvc
+  updateStrategy: {}
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: gitea-pvc
+      namespace: gitea
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+    status: {}
+status:
+  availableReplicas: 0
+  replicas: 0

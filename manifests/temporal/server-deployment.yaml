@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: temporal
+  name: temporal
+  namespace: temporal
+spec:
+  selector:
+    matchLabels:
+      app: temporal
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: temporal
+    spec:
+      containers:
+      - env:
+        - name: TEMPORAL_SERVER_CONFIG_FILE_PATH
+          value: /etc/temporal/config/config.yaml
+        image: temporalio/server:latest
+        name: temporal
+        ports:
+        - containerPort: 7233
+          name: grpc
+        - containerPort: 7243
+          name: http
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /etc/temporal/config/config.yaml
+          name: config
+          subPath: config.yaml
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: temporal-pvc
+      - configMap:
+          name: temporal-configmap
+        name: config
+status: {}

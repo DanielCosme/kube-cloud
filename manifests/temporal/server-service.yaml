@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: temporal
+  name: temporal
+  namespace: temporal
+spec:
+  ports:
+  - name: grpc
+    port: 7233
+    targetPort: 0
+  - name: http
+    port: 7243
+    targetPort: 0
+  selector:
+    app: temporal
+status:
+  loadBalancer: {}

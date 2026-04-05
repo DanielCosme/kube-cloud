@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: homepage
+  name: homepage
+  namespace: web-pages
+spec:
+  ports:
+  - port: 3001
+    targetPort: 0
+  selector:
+    app: homepage
+status:
+  loadBalancer: {}

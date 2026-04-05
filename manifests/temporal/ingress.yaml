@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
+  name: temporal-ingress
+  namespace: temporal
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: temporal.danicos.dev
+    http:
+      paths:
+      - backend:
+          service:
+            name: temporal-ui
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - temporal.danicos.dev
+status:
+  loadBalancer: {}

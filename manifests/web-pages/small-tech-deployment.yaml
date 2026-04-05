@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: small-tech
+  name: small-tech
+  namespace: web-pages
+spec:
+  selector:
+    matchLabels:
+      app: small-tech
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: small-tech
+    spec:
+      containers:
+      - image: danicos.dev/daniel/small_tech
+        name: small-tech
+        ports:
+        - containerPort: 3001
+        resources: {}
+status: {}

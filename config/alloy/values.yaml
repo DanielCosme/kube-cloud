@@ -1,0 +1,11 @@
+alloy:
+  mounts:
+    varlog: true
+  securityContext:
+    runAsUser: 0
+  configMap:
+    create: false
+    name: alloy-configmap
+    key: config.alloy
+  controller:
+    kind: DaemonSet

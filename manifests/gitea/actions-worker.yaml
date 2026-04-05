@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: actions-act-runner
+  name: actions-act-runner
+  namespace: gitea
+spec:
+  selector:
+    matchLabels:
+      app: actions-act-runner
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: actions-act-runner
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_FILE
+          value: /etc/act_runner/config.yaml
+        - name: GITEA_INSTANCE_URL
+          value: https://danicos.dev
+        - name: GITEA_RUNNER_LABELS
+          value: actions-act-runner:host
+        - name: GITEA_RUNNER_NAME
+          value: actions-act-runner
+        - name: GITEA_RUNNER_REGISTRATION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: act-runner-actions-token
+              name: gitea-secret
+        image: docker.io/gitea/act_runner:latest
+        name: actions-act-runner
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/act_runner
+          name: config
+          readOnly: true
+        - mountPath: /data
+          name: data
+        - mountPath: /root/.cache
+          name: cache
+      volumes:
+      - configMap:
+          name: gitea-configmap
+        name: config
+      - name: data
+        persistentVolumeClaim:
+          claimName: actions-act-runner-pvc
+      - name: cache
+        persistentVolumeClaim:
+          claimName: actions-cache-act-runner-pvc
+status: {}

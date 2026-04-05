@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: temporal-ui
+  name: temporal-ui
+  namespace: temporal
+spec:
+  selector:
+    matchLabels:
+      app: temporal-ui
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: temporal-ui
+    spec:
+      containers:
+      - env:
+        - name: TEMPORAL_ADDRESS
+          value: temporal:7233
+        - name: TEMPORAL_AUTH_CALLBACK_URL
+          value: https://temporal.danicos.dev/auth/sso/callback
+        - name: TEMPORAL_AUTH_ENABLED
+          value: "true"
+        - name: TEMPORAL_AUTH_ISSUER_URL
+          value: https://danicos.dev
+        - name: TEMPORAL_AUTH_LABEL
+          value: Gitea SSO
+        - name: TEMPORAL_AUTH_PROVIDER_URL
+          value: https://danicos.dev
+        - name: TEMPORAL_AUTH_SCOPES
+          value: openid,profile,email
+        - name: TEMPORAL_AUTH_TYPE
+          value: oidc
+        - name: TEMPORAL_CORS_ORIGINS
+          value: https://temporal.danicos.dev
+        - name: TEMPORAL_UI_PORT
+          value: "8080"
+        - name: TEMPORAL_AUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: client_id
+              name: temporal-secret
+        - name: TEMPORAL_AUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: client_secret
+              name: temporal-secret
+        image: temporalio/ui:latest
+        name: temporal-ui
+        ports:
+        - containerPort: 8080
+          name: web
+        resources: {}
+status: {}

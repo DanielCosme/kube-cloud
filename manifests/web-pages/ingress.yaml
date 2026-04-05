@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
+  name: web-pages-ingress
+  namespace: web-pages
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: danicos.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: homepage
+            port:
+              number: 3001
+        path: /
+        pathType: Prefix
+  - host: www.danicos.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: homepage
+            port:
+              number: 3001
+        path: /
+        pathType: Prefix
+  - host: small.tech
+    http:
+      paths:
+      - backend:
+          service:
+            name: small-tech
+            port:
+              number: 3001
+        path: /
+        pathType: Prefix
+  - host: www.small.tech
+    http:
+      paths:
+      - backend:
+          service:
+            name: small-tech
+            port:
+              number: 3001
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - danicos.me
+    - www.danicos.me
+    - small.tech
+    - www.small.tech
+status:
+  loadBalancer: {}

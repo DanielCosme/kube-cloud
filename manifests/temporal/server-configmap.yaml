@@ -1,0 +1,78 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    log:
+      stdout: true
+      level: info
+
+    persistence:
+      defaultStore: sqlite-default
+      visibilityStore: sqlite-visibility
+      numHistoryShards: 4
+      datastores:
+        sqlite-default:
+          sql:
+            pluginName: "sqlite"
+            databaseName: "/data/default.db"
+            connectAddr: "localhost"
+            connectProtocol: "tcp"
+            connectAttributes:
+              cache: "private"
+              setup: true
+        sqlite-visibility:
+          sql:
+            pluginName: "sqlite"
+            databaseName: "/data/visibility.db"
+            connectAddr: "localhost"
+            connectProtocol: "tcp"
+            connectAttributes:
+              cache: "private"
+              setup: true
+
+    services:
+      frontend:
+        rpc:
+          grpcPort: 7233
+          membershipPort: 6933
+          bindOnIP: "0.0.0.0"
+          httpPort: 7243
+      matching:
+        rpc:
+          grpcPort: 7235
+          membershipPort: 6935
+          bindOnLocalHost: true
+      history:
+        rpc:
+          grpcPort: 7234
+          membershipPort: 6934
+          bindOnLocalHost: true
+      worker:
+        rpc:
+          membershipPort: 6939
+
+    global:
+      membership:
+        maxJoinDuration: 30s
+        broadcastAddress: "127.0.0.1"
+      pprof:
+        port: 7936
+
+    clusterMetadata:
+      enableGlobalNamespace: false
+      failoverVersionIncrement: 10
+      masterClusterName: "active"
+      currentClusterName: "active"
+      clusterInformation:
+        active:
+          enabled: true
+          initialFailoverVersion: 1
+          rpcName: "frontend"
+          rpcAddress: "localhost:7236"
+          httpAddress: "localhost:7243"
+
+    dcRedirectionPolicy:
+      policy: "noop"
+kind: ConfigMap
+metadata:
+  name: temporal-configmap
+  namespace: temporal
