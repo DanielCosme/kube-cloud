@@ -15,12 +15,6 @@ import (
 	"danicos.dev/daniel/kube-deploy/pkg/temporal"
 )
 
-/*
-	TODOS:
-		- Populate magefiles.
-		- Handle Secrets.
-*/
-
 func main() {
 	var err error
 	var command string
