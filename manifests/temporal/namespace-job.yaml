@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: namespace-job
+  namespace: temporal
+spec:
+  template:
+    metadata: {}
+    spec:
+      containers:
+      - args:
+        - /scripts/create-namespace.sh
+        command:
+        - /bin/sh
+        env:
+        - name: DEFAULT_NAMESPACE
+          value: default
+        - name: TEMPORAL_ADDRESS
+          value: temporal:7233
+        image: temporalio/admin-tools:latest
+        name: create-default-namespace
+        resources: {}
+        volumeMounts:
+        - mountPath: /scripts
+          name: script-volume
+      restartPolicy: OnFailure
+      volumes:
+      - configMap:
+          name: namespace-job-configmap
+        name: script-volume
+status: {}

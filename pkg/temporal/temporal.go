@@ -7,6 +7,7 @@ import (
 	"danicos.dev/daniel/go-kube/pkg/stack"
 	"danicos.dev/daniel/kube-deploy/pkg/services"
 	apps "k8s.io/api/apps/v1"
+	batch "k8s.io/api/batch/v1"
 	core "k8s.io/api/core/v1"
 	net "k8s.io/api/networking/v1"
 )
@@ -22,17 +23,19 @@ var Secret = struct {
 }
 
 var (
-	meta_server      kube.Metadata
-	Namespace        = kube.Namespace(services.Temporal)
-	pvc              core.PersistentVolumeClaim
-	server_srv       core.Service
-	server_config    core.ConfigMap
-	server_grpc_port kube.ServicePort
-	server_http_port kube.ServicePort
-	meta_ui          kube.Metadata
-	ui_srv           core.Service
-	ui_port          kube.ServicePort
-	ui_config        core.ConfigMap
+	meta_server            kube.Metadata
+	Namespace              = kube.Namespace(services.Temporal)
+	pvc                    core.PersistentVolumeClaim
+	server_srv             core.Service
+	server_config          core.ConfigMap
+	server_grpc_port       kube.ServicePort
+	server_http_port       kube.ServicePort
+	meta_ui                kube.Metadata
+	ui_srv                 core.Service
+	ui_port                kube.ServicePort
+	ui_config              core.ConfigMap
+	defaultNamespaceScript core.ConfigMap
+	meta_job               kube.Metadata
 )
 
 func init() {
@@ -52,19 +55,23 @@ func init() {
 	ui_port = kube.ServicePort{Name: "web", Port: services.TemporalUIPort}
 	ui_srv = meta_ui.ServiceFrom(ui_port)
 	ui_config = kube.ConfigFromFile("config.yaml", "./config/temporal/ui-config.yaml", meta_ui)
+	meta_job = kube.NewMetadata("namespace-job", Namespace)
+	defaultNamespaceScript = kube.ConfigFromFile("create-namespace.sh", "./config/temporal/create_namespace.sh", meta_job)
 }
 
 func Stack() stack.Stack {
 	// We use SQLite becaues we use Temporal in a low-throughput single-instance setup.
 	return stack.NewStack("temporal", map[string]any{
-		"namespace":         Namespace,
-		"pvc":               pvc,
-		"server-configmap":  server_config,
-		"server-service":    server_srv,
-		"server-deployment": server_deployment(),
-		"ui-service":        ui_srv,
-		"ui-deployment":     ui_deployment(),
-		"ingress":           ingress(),
+		"namespace":            Namespace,
+		"pvc":                  pvc,
+		"server-configmap":     server_config,
+		"server-service":       server_srv,
+		"server-deployment":    server_deployment(),
+		"ui-service":           ui_srv,
+		"ui-deployment":        ui_deployment(),
+		"ingress":              ingress(),
+		"namespace-job-script": defaultNamespaceScript,
+		"namespace-job":        namespace_job(),
 	})
 }
 
@@ -109,6 +116,30 @@ func server_deployment() apps.Deployment {
 		},
 	}
 	return kube.NewDeployment(meta_server, podSpec)
+}
+
+func namespace_job() batch.Job {
+	scriptVol := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "script-volume", defaultNamespaceScript.Name)
+	restartPolicy := core.RestartPolicyOnFailure
+	pod_spec := core.PodSpec{
+		RestartPolicy: restartPolicy,
+		Containers: []core.Container{{
+			Name:    "create-default-namespace",
+			Image:   "temporalio/admin-tools:latest",
+			Command: []string{"/bin/sh"},
+			Args:    []string{"/scripts/create-namespace.sh"},
+			Env: kube.NewEnvVar(map[string]string{
+				"TEMPORAL_ADDRESS":  "temporal:7233",
+				"DEFAULT_NAMESPACE": "default",
+			}),
+			VolumeMounts: []core.VolumeMount{{
+				Name:      scriptVol.Name,
+				MountPath: "/scripts",
+			}},
+		}},
+		Volumes: []core.Volume{scriptVol},
+	}
+	return kube.NewJob(meta_job, pod_spec)
 }
 
 func ui_deployment() apps.Deployment {
