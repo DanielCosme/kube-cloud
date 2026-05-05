@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-immich
+  namespace: proxy
+spec:
+  externalName: hydra-0.orca-uaru.ts.net
+  ports:
+  - port: 30011
+    targetPort: 0
+  type: ExternalName
+status:
+  loadBalancer: {}

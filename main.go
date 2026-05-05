@@ -10,6 +10,7 @@ import (
 	"danicos.dev/daniel/kube-deploy/pkg/curiousape"
 	"danicos.dev/daniel/kube-deploy/pkg/gitea"
 	"danicos.dev/daniel/kube-deploy/pkg/observe"
+	"danicos.dev/daniel/kube-deploy/pkg/proxy"
 	"danicos.dev/daniel/kube-deploy/pkg/secrets"
 	"danicos.dev/daniel/kube-deploy/pkg/static"
 	"danicos.dev/daniel/kube-deploy/pkg/temporal"
@@ -32,6 +33,7 @@ func main() {
 		"web-pages":     static.Stack(),
 		"observability": observe.Stack(),
 		"temporal":      temporal.Stack(),
+		"proxy":         proxy.Stack(),
 	}
 
 	parentDir := "manifests"
