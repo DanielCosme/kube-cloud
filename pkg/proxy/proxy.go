@@ -11,9 +11,12 @@ import (
 	net "k8s.io/api/networking/v1"
 )
 
+const TailscaleHost = "hydra-0.orca-uaru.ts.net"
+
+var Namespace = kube.Namespace("proxy")
 var linkding_srv core.Service
 var immich_srv core.Service
-var Namespace = kube.Namespace("proxy")
+var glance_srv core.Service
 
 func init() {
 	linkding_srv = core.Service{
@@ -26,7 +29,7 @@ func init() {
 				},
 			},
 			Type:         core.ServiceTypeExternalName,
-			ExternalName: "hydra-0.orca-uaru.ts.net",
+			ExternalName: TailscaleHost,
 		},
 	}
 	immich_srv = core.Service{
@@ -39,7 +42,20 @@ func init() {
 				},
 			},
 			Type:         core.ServiceTypeExternalName,
-			ExternalName: "hydra-0.orca-uaru.ts.net",
+			ExternalName: TailscaleHost,
+		},
+	}
+	glance_srv = core.Service{
+		TypeMeta:   kube.ServiceMeta,
+		ObjectMeta: kube.ObjectMeta("proxy-glance", Namespace.Name),
+		Spec: core.ServiceSpec{
+			Ports: []core.ServicePort{
+				{
+					Port: 30009,
+				},
+			},
+			Type:         core.ServiceTypeExternalName,
+			ExternalName: TailscaleHost,
 		},
 	}
 }
@@ -56,6 +72,11 @@ func Ingress() net.Ingress {
 			ServiceName: immich_srv.Name,
 			PortNumber:  immich_srv.Spec.Ports[0].Port,
 		},
+		{
+			Host:        "home.danicos.me",
+			ServiceName: glance_srv.Name,
+			PortNumber:  glance_srv.Spec.Ports[0].Port,
+		},
 	}
 	return kube.Ingress(Namespace.Name, rules, true)
 }
@@ -66,5 +87,6 @@ func Stack() stack.Stack {
 		"ingress":      Ingress(),
 		"linkding-srv": linkding_srv,
 		"immich-srv":   immich_srv,
+		"glance-srv":   glance_srv,
 	})
 }

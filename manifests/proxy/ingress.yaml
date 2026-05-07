@@ -30,9 +30,20 @@ spec:
               number: 30011
         path: /
         pathType: Prefix
+  - host: home.danicos.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: proxy-glance
+            port:
+              number: 30009
+        path: /
+        pathType: Prefix
   tls:
   - hosts:
     - link.danicos.me
     - photos.danicos.me
+    - home.danicos.me
 status:
   loadBalancer: {}
