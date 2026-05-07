@@ -3,7 +3,7 @@ package services
 const (
 	Gitea         = "gitea"
 	GiteaHost     = "danicos.dev"
-	GiteaImage    = "docker.gitea.com/gitea:1.25.4"
+	GiteaImage    = "docker.gitea.com/gitea:1.26.1"
 	GiteaPort     = 3000
 	GiteaReplicas = 1
 

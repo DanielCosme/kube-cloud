@@ -20,7 +20,7 @@ spec:
       - env:
         - name: TZ
           value: America/Toronto
-        image: docker.gitea.com/gitea:1.25.4
+        image: docker.gitea.com/gitea:1.26.1
         livenessProbe:
           failureThreshold: 10
           httpGet:
