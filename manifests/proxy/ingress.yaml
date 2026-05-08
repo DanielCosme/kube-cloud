@@ -40,10 +40,21 @@ spec:
               number: 30009
         path: /
         pathType: Prefix
+  - host: vault.danicos.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: proxy-vaultwarden
+            port:
+              number: 30012
+        path: /
+        pathType: Prefix
   tls:
   - hosts:
     - link.danicos.me
     - photos.danicos.me
     - home.danicos.me
+    - vault.danicos.me
 status:
   loadBalancer: {}

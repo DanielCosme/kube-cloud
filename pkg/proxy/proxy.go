@@ -17,8 +17,22 @@ var Namespace = kube.Namespace("proxy")
 var linkding_srv core.Service
 var immich_srv core.Service
 var glance_srv core.Service
+var vaultwarden_srv core.Service
 
 func init() {
+	glance_srv = core.Service{
+		TypeMeta:   kube.ServiceMeta,
+		ObjectMeta: kube.ObjectMeta("proxy-glance", Namespace.Name),
+		Spec: core.ServiceSpec{
+			Ports: []core.ServicePort{
+				{
+					Port: 30009,
+				},
+			},
+			Type:         core.ServiceTypeExternalName,
+			ExternalName: TailscaleHost,
+		},
+	}
 	linkding_srv = core.Service{
 		TypeMeta:   kube.ServiceMeta,
 		ObjectMeta: kube.ObjectMeta("proxy", Namespace.Name),
@@ -45,13 +59,13 @@ func init() {
 			ExternalName: TailscaleHost,
 		},
 	}
-	glance_srv = core.Service{
+	vaultwarden_srv = core.Service{
 		TypeMeta:   kube.ServiceMeta,
-		ObjectMeta: kube.ObjectMeta("proxy-glance", Namespace.Name),
+		ObjectMeta: kube.ObjectMeta("proxy-vaultwarden", Namespace.Name),
 		Spec: core.ServiceSpec{
 			Ports: []core.ServicePort{
 				{
-					Port: 30009,
+					Port: 30012,
 				},
 			},
 			Type:         core.ServiceTypeExternalName,
@@ -77,16 +91,22 @@ func Ingress() net.Ingress {
 			ServiceName: glance_srv.Name,
 			PortNumber:  glance_srv.Spec.Ports[0].Port,
 		},
+		{
+			Host:        "vault.danicos.me",
+			ServiceName: vaultwarden_srv.Name,
+			PortNumber:  vaultwarden_srv.Spec.Ports[0].Port,
+		},
 	}
 	return kube.Ingress(Namespace.Name, rules, true)
 }
 
 func Stack() stack.Stack {
 	return stack.NewStack("proxy", map[string]any{
-		"namespace":    Namespace,
-		"ingress":      Ingress(),
-		"linkding-srv": linkding_srv,
-		"immich-srv":   immich_srv,
-		"glance-srv":   glance_srv,
+		"namespace":       Namespace,
+		"ingress":         Ingress(),
+		"linkding-srv":    linkding_srv,
+		"immich-srv":      immich_srv,
+		"glance-srv":      glance_srv,
+		"vaultwarden-srv": vaultwarden_srv,
 	})
 }
