@@ -172,6 +172,12 @@ func DanielActRunnerDeployment() apps.Deployment {
 	configVolume := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "config", CFG.Name)
 	dataVolume := kube.NewVolumeFrom(kube.VolumeSourcePVC, "data", DanielRunnerPVC.Name)
 	cacheVolume := kube.NewVolumeFrom(kube.VolumeSourcePVC, "cache", DanielRunnerCachePVC.Name)
+	dockerSocket := core.Volume{
+		Name: "docker-socket",
+		VolumeSource: core.VolumeSource{
+			EmptyDir: &core.EmptyDirVolumeSource{},
+		},
+	}
 	envMapping := map[string]string{
 		"CONFIG_FILE":         "/etc/act_runner/config.yaml",
 		"GITEA_INSTANCE_URL":  "https://" + services.GiteaHost,
@@ -182,9 +188,38 @@ func DanielActRunnerDeployment() apps.Deployment {
 		"GITEA_RUNNER_REGISTRATION_TOKEN": Secret.ActRunnerDanielToken,
 	}
 	podSpec := core.PodSpec{
+		RestartPolicy: core.RestartPolicyAlways,
+		InitContainers: []core.Container{{
+			RestartPolicy: new(core.ContainerRestartPolicyAlways),
+			Name:          "docker",
+			Image:         "docker:28.2.2-dind",
+			SecurityContext: &core.SecurityContext{
+				Privileged: new(true),
+			},
+			VolumeMounts: []core.VolumeMount{
+				{
+					Name:      dockerSocket.Name,
+					MountPath: "/var/run",
+				},
+			},
+			StartupProbe: &core.Probe{
+				ProbeHandler: core.ProbeHandler{
+					Exec: &core.ExecAction{
+						Command: []string{"/usr/bin/test", "-S", "/var/run/docker.sock"},
+					},
+				},
+			},
+			LivenessProbe: &core.Probe{
+				ProbeHandler: core.ProbeHandler{
+					Exec: &core.ExecAction{
+						Command: []string{"/usr/bin/test", "-S", "/var/run/docker.sock"},
+					},
+				},
+			},
+		}},
 		Containers: []core.Container{{
 			Name:  daniel_runner_meta.Meta().Name,
-			Image: "docker.io/gitea/act_runner:latest",
+			Image: "docker.io/gitea/runner:latest",
 			Env:   kube.NewEnvVarWithSecret(envMapping, secretMapping, Secret.Name),
 			VolumeMounts: []core.VolumeMount{
 				{
@@ -200,12 +235,17 @@ func DanielActRunnerDeployment() apps.Deployment {
 					Name:      cacheVolume.Name,
 					MountPath: "/root/.cache",
 				},
+				{
+					Name:      dockerSocket.Name,
+					MountPath: "/var/run",
+				},
 			},
 		}},
 		Volumes: []core.Volume{
 			configVolume,
 			dataVolume,
 			cacheVolume,
+			dockerSocket,
 		},
 	}
 	return kube.NewDeployment(daniel_runner_meta, podSpec)

@@ -30,7 +30,7 @@ spec:
             secretKeyRef:
               key: act-runner-daniel-token
               name: gitea-secret
-        image: docker.io/gitea/act_runner:latest
+        image: docker.io/gitea/runner:latest
         name: daniel-act-runner
         resources: {}
         volumeMounts:
@@ -41,6 +41,31 @@ spec:
           name: data
         - mountPath: /root/.cache
           name: cache
+        - mountPath: /var/run
+          name: docker-socket
+      initContainers:
+      - image: docker:28.2.2-dind
+        livenessProbe:
+          exec:
+            command:
+            - /usr/bin/test
+            - -S
+            - /var/run/docker.sock
+        name: docker
+        resources: {}
+        restartPolicy: Always
+        securityContext:
+          privileged: true
+        startupProbe:
+          exec:
+            command:
+            - /usr/bin/test
+            - -S
+            - /var/run/docker.sock
+        volumeMounts:
+        - mountPath: /var/run
+          name: docker-socket
+      restartPolicy: Always
       volumes:
       - configMap:
           name: gitea-configmap
@@ -51,4 +76,6 @@ spec:
       - name: cache
         persistentVolumeClaim:
           claimName: daniel-cache-act-runner-pvc
+      - emptyDir: {}
+        name: docker-socket
 status: {}
