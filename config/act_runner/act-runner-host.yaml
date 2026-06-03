@@ -3,4 +3,4 @@ log:
   level: info
 
 cache:
-  enabled: false
+  enabled: true

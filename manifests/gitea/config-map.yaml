@@ -1,7 +1,12 @@
 apiVersion: v1
 data:
-  config.yaml: "log:\r\n  # The level of logging, can be trace, debug, info, warn,
-    error, fatal\r\n  level: info\r\n\r\ncache:\r\n  enabled: false\r\n"
+  config.yaml: |
+    log:
+      # The level of logging, can be trace, debug, info, warn, error, fatal
+      level: info
+
+    cache:
+      enabled: true
 kind: ConfigMap
 metadata:
   name: gitea-configmap
