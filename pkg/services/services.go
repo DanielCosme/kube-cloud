@@ -9,7 +9,7 @@ const (
 
 	CuriousApe      = "curious-ape"
 	CuriusApeHost   = "ape.danicos.me"
-	CuriousApeImage = "danicos.dev/daniel/curious-ape:v1.2.3"
+	CuriousApeImage = "danicos.dev/daniel/curious-ape:1.2.3"
 	CuriuosApePort  = 4000
 
 	Temporal            = "temporal"
