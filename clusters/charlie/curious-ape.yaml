@@ -24,3 +24,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: curious-ape
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
