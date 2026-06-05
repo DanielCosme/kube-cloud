@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"danicos.dev/daniel/go-kube/pkg/stack"
-	"danicos.dev/daniel/kube-deploy/pkg/curiousape"
 	"danicos.dev/daniel/kube-deploy/pkg/gitea"
 	"danicos.dev/daniel/kube-deploy/pkg/observe"
 	"danicos.dev/daniel/kube-deploy/pkg/proxy"
@@ -27,8 +26,9 @@ func main() {
 	fmt.Println("Building: " + command)
 
 	stacks := map[string]stack.Stack{
-		"gitea":         gitea.Stack(),
-		"curious-ape":   curiousape.Stack(),
+		"gitea": gitea.Stack(),
+		// This is now managed with flux, from another Git Repository: https://danicos.dev/daniel/curious-ape
+		// "curious-ape":   curiousape.Stack(),
 		"secrets":       secrets.Stack(),
 		"web-pages":     static.Stack(),
 		"observability": observe.Stack(),
