@@ -45,6 +45,7 @@ func init() {
 		Port: 22,
 	})
 	gitea_config_map = kube.ConfigFromFile("evergreen.css", "config/gitea/assets/css/evergreen.css", meta)
+	gitea_config_map.Data["robots.txt"] = string(kube.ReadFileBytes("./config/gitea/robots.txt"))
 
 	action_runner_meta = kube.NewMetadata("actions-act-runner", Namespace)
 	ActionsRunnerPVC = action_runner_meta.PVC()
@@ -97,6 +98,10 @@ func StatefulSet() apps.StatefulSet {
 			Key:  "evergreen.css",
 			Path: "evergreen.css",
 		},
+		{
+			Key:  "robots.txt",
+			Path: "robots.txt",
+		},
 	}
 	podSpec := core.PodSpec{
 		Containers: []core.Container{
@@ -126,6 +131,12 @@ func StatefulSet() apps.StatefulSet {
 						ReadOnly:  true,
 						MountPath: "/data/gitea/public/assets/css/theme-evergreen.css",
 					},
+					{
+						Name:      giteaVolume.Name,
+						SubPath:   "robots.txt",
+						ReadOnly:  true,
+						MountPath: "/data/gitea/public/robots.txt",
+					},
 				},
 			},
 		},
@@ -146,7 +157,9 @@ func Ingress() net.Ingress {
 			PortNumber:  services.GiteaPort,
 		},
 	}
-	return kube.Ingress(Namespace.Name, rules, true)
+	i := kube.Ingress(Namespace.Name, rules, true)
+	i.Annotations["traefik.ingress.kubernetes.io/router.middlewares"] = "gitea-block-openai-xai@kubernetescrd"
+	return i
 }
 
 func ActionsActRunnerDeployment() apps.Deployment {

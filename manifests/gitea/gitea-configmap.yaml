@@ -122,6 +122,9 @@ data:
     loop\"],\n.emoji[aria-label=\"double curly loop\"],\n.emoji[aria-label=\"wavy
     dash\"],\n.emoji[aria-label=\"paw prints\"],\n.emoji[aria-label=\"musical note\"],\n.emoji[aria-label=\"musical
     notes\"] {\n\tfilter: invert(100%) hue-rotate(180deg);\n}\n"
+  robots.txt: |
+    User-agent: *
+    Disallow: /
 kind: ConfigMap
 metadata:
   name: gitea-configmap

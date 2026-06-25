@@ -44,11 +44,17 @@ spec:
           name: gitea-assets
           readOnly: true
           subPath: evergreen.css
+        - mountPath: /data/gitea/public/robots.txt
+          name: gitea-assets
+          readOnly: true
+          subPath: robots.txt
       volumes:
       - configMap:
           items:
           - key: evergreen.css
             path: evergreen.css
+          - key: robots.txt
+            path: robots.txt
           name: gitea-configmap
         name: gitea-assets
   updateStrategy: {}
