@@ -1,0 +1,128 @@
+apiVersion: v1
+data:
+  evergreen.css: "/* Optional metadata */\ngitea-theme-meta-info {\n\t--theme-display-name:
+    \"Evergreen\";\n\t--theme-color-scheme: \"dark\";\n}\n\n:root {\n\t--is-dark-theme:
+    true;\n\n\t/* Primary (accent green from colors.toml) */\n\t--color-primary: #76946a;\n\t--color-primary-contrast:
+    #ffffff;\n\t--color-primary-dark-1: #5f7755;\n\t--color-primary-dark-2: #4a5c44;\n\t--color-primary-dark-3:
+    #3a4635;\n\t--color-primary-dark-4: #2e3a2b;\n\t--color-primary-dark-5: #252f24;\n\t--color-primary-dark-6:
+    #1c241c;\n\t--color-primary-dark-7: #141a15;\n\t--color-primary-light-1: #98bb6c;\n\t--color-primary-light-2:
+    #a8c57f;\n\t--color-primary-light-3: #b4d08f;\n\t--color-primary-light-4: #c0db9f;\n\t--color-primary-light-5:
+    #cce6af;\n\t--color-primary-light-6: #d8f1bf;\n\t--color-primary-light-7: #e4f8cf;\n\t--color-primary-alpha-10:
+    #76946a1a;\n\t--color-primary-alpha-20: #76946a33;\n\t--color-primary-alpha-30:
+    #76946a4b;\n\t--color-primary-alpha-40: #76946a66;\n\t--color-primary-alpha-50:
+    #76946a80;\n\t--color-primary-alpha-60: #76946a99;\n\t--color-primary-alpha-70:
+    #76946ab3;\n\t--color-primary-alpha-80: #76946acc;\n\t--color-primary-alpha-90:
+    #76946ae1;\n\t--color-primary-hover: #98bb6c;\n\t--color-primary-active: #7e9c72;\n\n\t/*
+    Secondary (teal) */\n\t--color-secondary: #6a9589;\n\t--color-secondary-dark-1:
+    #55776d;\n\t--color-secondary-dark-2: #4a685e;\n\t--color-secondary-dark-3: #3f594f;\n\t--color-secondary-dark-4:
+    #354a41;\n\t--color-secondary-dark-5: #2b3b34;\n\t--color-secondary-dark-6: #223028;\n\t--color-secondary-dark-7:
+    #1a2520;\n\t--color-secondary-dark-8: #141c18;\n\t--color-secondary-dark-9: #101613;\n\t--color-secondary-dark-10:
+    #0d120f;\n\t--color-secondary-dark-11: #0a0e0c;\n\t--color-secondary-dark-12:
+    #070a08;\n\t--color-secondary-dark-13: #050706;\n\t--color-secondary-light-1:
+    #7aa89f;\n\t--color-secondary-light-2: #8bb6ae;\n\t--color-secondary-light-3:
+    #9cc4bd;\n\t--color-secondary-light-4: #b0d2cc;\n\t--color-secondary-alpha-10:
+    #6a95891a;\n\t--color-secondary-alpha-20: #6a958933;\n\t--color-secondary-alpha-30:
+    #6a95894b;\n\t--color-secondary-alpha-40: #6a958966;\n\t--color-secondary-alpha-50:
+    #6a958980;\n\t--color-secondary-alpha-60: #6a958999;\n\t--color-secondary-alpha-70:
+    #6a9589b3;\n\t--color-secondary-alpha-80: #6a9589cc;\n\t--color-secondary-alpha-90:
+    #6a9589e1;\n\t--color-secondary-button: var(--color-secondary-dark-4);\n\t--color-secondary-hover:
+    var(--color-secondary-dark-3);\n\t--color-secondary-active: var(--color-secondary-dark-2);\n\n\t/*
+    Console */\n\t--color-console-fg: #e6e4d9;\n\t--color-console-fg-subtle: #b8b9a6;\n\t--color-console-bg:
+    #111c18;\n\t--color-console-border: #2e3a2b;\n\t--color-console-hover-bg: #1f2924;\n\t--color-console-active-bg:
+    #2e3a2b;\n\t--color-console-menu-bg: #1a2420;\n\t--color-console-menu-border:
+    #3f4f47;\n\t--color-console-link: #8a8a78;\n\n\t/* Semantic base (from colors.toml
+    + evergreen copy) */\n\t--color-red: #c34043;\n\t--color-orange: #c0a36e;\n\t--color-yellow:
+    #e6c384;\n\t--color-olive: #98bb6c;\n\t--color-green: #76946a;\n\t--color-teal:
+    #6a9589;\n\t--color-blue: #7e9cd8;\n\t--color-violet: #938aa9;\n\t--color-purple:
+    #957fb8;\n\t--color-pink: #957fb8;\n\t--color-brown: #a38658;\n\t--color-black:
+    #111c18;\n\n\t--color-red-light: #d15a5a;\n\t--color-orange-light: #d4b88a;\n\t--color-yellow-light:
+    #f0d6a3;\n\t--color-olive-light: #b4d08f;\n\t--color-green-light: #93b373;\n\t--color-teal-light:
+    #7aa89f;\n\t--color-blue-light: #9db4e3;\n\t--color-violet-light: #a99fc0;\n\t--color-purple-light:
+    #b19cc9;\n\t--color-pink-light: #b38ca8;\n\t--color-brown-light: #b89f75;\n\t--color-black-light:
+    #53685b;\n\n\t--color-red-dark-1: #a32e31;\n\t--color-orange-dark-1: #a38658;\n\t--color-yellow-dark-1:
+    #c2a56e;\n\t--color-olive-dark-1: #7a9e55;\n\t--color-green-dark-1: #5f7755;\n\t--color-teal-dark-1:
+    #55776d;\n\t--color-blue-dark-1: #6b85ba;\n\t--color-violet-dark-1: #7b7390;\n\t--color-purple-dark-1:
+    #7d6a9a;\n\t--color-pink-dark-1: #95758c;\n\t--color-brown-dark-1: #866f47;\n\t--color-black-dark-1:
+    #0d1613;\n\n\t--color-red-dark-2: #8a2528;\n\t--color-orange-dark-2: #866f47;\n\t--color-yellow-dark-2:
+    #9c8456;\n\t--color-olive-dark-2: #658446;\n\t--color-green-dark-2: #4a5c44;\n\t--color-teal-dark-2:
+    #47655c;\n\t--color-blue-dark-2: #586f9c;\n\t--color-violet-dark-2: #655e76;\n\t--color-purple-dark-2:
+    #66557e;\n\t--color-pink-dark-2: #7b5f72;\n\t--color-brown-dark-2: #6e5a3a;\n\t--color-black-dark-2:
+    #0a1210;\n\n\t/* ANSI (exact from colors.toml) */\n\t--color-ansi-black: #111c18;\n\t--color-ansi-red:
+    #c34043;\n\t--color-ansi-green: #76946a;\n\t--color-ansi-yellow: #c0a36e;\n\t--color-ansi-blue:
+    #7e9cd8;\n\t--color-ansi-magenta: #957fb8;\n\t--color-ansi-cyan: #6a9589;\n\t--color-ansi-white:
+    #C1C497;\n\t--color-ansi-bright-black: #53685b;\n\t--color-ansi-bright-red: #e82424;\n\t--color-ansi-bright-green:
+    #98bb6c;\n\t--color-ansi-bright-yellow: #e6c384;\n\t--color-ansi-bright-blue:
+    #7fb4ca;\n\t--color-ansi-bright-magenta: #938aa9;\n\t--color-ansi-bright-cyan:
+    #7aa89f;\n\t--color-ansi-bright-white: #dcd7ba;\n\n\t/* Greys / misc */\n\t--color-grey:
+    #3f4f47;\n\t--color-grey-light: #6e6e5f;\n\t--color-gold: #c0a36e;\n\t--color-white:
+    #ffffff;\n\n\t/* Diff (inspired by evergreen copy) */\n\t--color-diff-added-fg:
+    #98bb6c;\n\t--color-diff-added-linenum-bg: #1f2924;\n\t--color-diff-added-row-bg:
+    #1a2420;\n\t--color-diff-added-row-border: #2e3a2b;\n\t--color-diff-added-word-bg:
+    #2a3a2b;\n\t--color-diff-moved-row-bg: #2c2a1f;\n\t--color-diff-moved-row-border:
+    #5a5a3a;\n\t--color-diff-removed-fg: #e82424;\n\t--color-diff-removed-linenum-bg:
+    #2c1f1f;\n\t--color-diff-removed-row-bg: #2c1f1f;\n\t--color-diff-removed-row-border:
+    #4a2a2a;\n\t--color-diff-removed-word-bg: #5a2f2f;\n\t--color-diff-inactive: #25272a;\n\n\t/*
+    Status / alerts */\n\t--color-error-border: #763232;\n\t--color-error-bg: #322226;\n\t--color-error-bg-active:
+    #49262a;\n\t--color-error-bg-hover: #3c2427;\n\t--color-error-text: var(--color-text);\n\t--color-success-border:
+    #225633;\n\t--color-success-bg: #1c3329;\n\t--color-success-text: var(--color-text);\n\t--color-warning-border:
+    #5f481a;\n\t--color-warning-bg: #342e1f;\n\t--color-warning-text: var(--color-text);\n\t--color-info-border:
+    #254a7e;\n\t--color-info-bg: #1b283a;\n\t--color-info-text: var(--color-text);\n\n\t/*
+    Badges */\n\t--color-red-badge: #db2828;\n\t--color-red-badge-bg: #db28281a;\n\t--color-red-badge-hover-bg:
+    #db28284d;\n\t--color-green-badge: #21ba45;\n\t--color-green-badge-bg: #21ba451a;\n\t--color-green-badge-hover-bg:
+    #21ba454d;\n\t--color-yellow-badge: #fbbd08;\n\t--color-yellow-badge-bg: #fbbd081a;\n\t--color-yellow-badge-hover-bg:
+    #fbbd084d;\n\t--color-orange-badge: #f2711c;\n\t--color-orange-badge-bg: #f2711c1a;\n\t--color-orange-badge-hover-bg:
+    #f2711c4d;\n\n\t/* Other */\n\t--color-git: #f05133;\n\t--color-logo: #609926;\n\n\t/*
+    Base UI - Evergreen forest (from evergreen copy.css + colors.toml) */\n\t--color-body:
+    #161f1b;\n\t--color-box-header: #1f2924;\n\t--color-box-body: #161f1b;\n\t--color-box-body-highlight:
+    #1f2924;\n\t--color-text-dark: #e6e4d9;\n\t--color-text: #d4d8c7;\n\t--color-text-light:
+    #b8b9a6;\n\t--color-text-light-1: #a1a18f;\n\t--color-text-light-2: #8a8a78;\n\t--color-text-light-3:
+    #6e6e5f;\n\t--color-footer: var(--color-nav-bg);\n\t--color-timeline: #3f4f47;\n\t--color-input-text:
+    var(--color-text-dark);\n\t--color-input-background: #1f2924;\n\t--color-input-toggle-background:
+    #323438;\n\t--color-input-border: var(--color-secondary-dark-1);\n\t--color-light:
+    #0b0b0c28;\n\t--color-light-border: #f3f3f428;\n\n\t/* Interactive states (evergreen
+    copy) */\n\t--color-hover: rgba(118, 148, 106, 0.15);\n\t--color-hover-opaque:
+    #1f2924;\n\t--color-active: rgba(118, 148, 106, 0.25);\n\t--color-menu: #1a2420;\n\t--color-card:
+    #1a2420;\n\t--color-markup-table-row: #f3f3f40f;\n\t--color-markup-code-block:
+    #f3f3f412;\n\t--color-markup-code-inline: #f3f3f428;\n\t--color-button: #1f2924;\n\t--color-code-bg:
+    #161718;\n\t--color-shadow: rgba(0, 0, 0, 0.5);\n\t--color-shadow-opaque: #0b0b0c;\n\t--color-secondary-bg:
+    #2e3033;\n\t--color-expand-button: #333539;\n\t--color-placeholder-text: var(--color-text-light-3);\n\t--color-editor-line-highlight:
+    var(--color-secondary-alpha-40);\n\t--color-editor-selection: var(--color-primary-alpha-50);\n\t--color-project-column-bg:
+    var(--color-secondary-light-2);\n\t--color-caret: var(--color-text);\n\t--color-reaction-bg:
+    #f3f3f412;\n\t--color-reaction-hover-bg: var(--color-primary-light-4);\n\t--color-reaction-active-bg:
+    var(--color-primary-light-5);\n\t--color-tooltip-text: #fafafa;\n\t--color-tooltip-bg:
+    #0b0b0cf0;\n\n\t/* Nav / labels */\n\t--color-nav-bg: #18191b;\n\t--color-nav-hover-bg:
+    var(--color-secondary-light-1);\n\t--color-nav-text: var(--color-text);\n\t--color-secondary-nav-bg:
+    #1a1b1e;\n\t--color-label-text: var(--color-text);\n\t--color-label-bg: #1f2924;\n\t--color-label-hover-bg:
+    #3f4f47;\n\t--color-label-active-bg: #53685b;\n\n\t/* Accents / highlights */\n\t--color-accent:
+    var(--color-primary-light-1);\n\t--color-small-accent: var(--color-primary-light-5);\n\t--color-highlight-fg:
+    #c0a36e;\n\t--color-highlight-bg: #2c2a1f;\n\t--color-overlay-backdrop: #080808c0;\n\t--color-danger:
+    var(--color-red);\n\t--color-transparency-grid-light: #2a2a2a;\n\t--color-transparency-grid-dark:
+    #1a1a1a;\n\t--color-workflow-edge-hover: #666a73;\n\n\t/* Syntax highlighting
+    (Kanagawa-inspired with evergreen accents) */\n\t--color-syntax-keyword: #ff8854;\n\t--color-syntax-bool:
+    #7fb4ca;\n\t--color-syntax-control: #c0a36e;\n\t--color-syntax-name: #98bb6c;\n\t--color-syntax-type:
+    #7e9cd8;\n\t--color-syntax-number: #63b2dd;\n\t--color-syntax-operator: #ff8854;\n\t--color-syntax-regexp:
+    #938aa9;\n\t--color-syntax-string: #95b62a;\n\t--color-syntax-comment: #8898b0;\n\t--color-syntax-invalid:
+    #ff8686;\n\t--color-syntax-link: var(--color-primary);\n\t--color-syntax-tag:
+    #ff8854;\n\t--color-syntax-attribute: #c792ff;\n\t--color-syntax-property: #55afff;\n\t--color-syntax-variable:
+    #e29b33;\n\t--color-syntax-string-special: #dd9e17;\n\t--color-syntax-escape:
+    #c7a618;\n\t--color-syntax-entity: #c792ff;\n\t--color-syntax-preproc: #4cbe7a;\n\t--color-syntax-preproc-file:
+    #63b2dd;\n\t--color-syntax-decorator: #4cbe7a;\n\t--color-syntax-namespace: #c9d1d9;\n\t--color-syntax-name-pseudo:
+    #c792ff;\n\t--color-syntax-comment-special: #b89de4;\n\t--color-syntax-text: #c9d1d9;\n\t--color-syntax-text-alt:
+    #b9bcc7;\n\t--color-syntax-punctuation: #d2d4db;\n\t--color-syntax-whitespace:
+    #7f8699;\n\t--color-syntax-diff-fg: #ffffff;\n\t--color-syntax-deleted-bg: #5f3737;\n\t--color-syntax-inserted-bg:
+    #3a523a;\n\t--color-syntax-emph: #d1a242;\n\t--color-syntax-strong: #e29b33;\n\t--color-syntax-heading:
+    #dd9e17;\n\t--color-syntax-subheading: #95b62a;\n\t--color-syntax-output: #8898b0;\n\t--color-syntax-prompt:
+    #e29b33;\n\t--color-syntax-traceback: #ff8686;\n\t--color-syntax-matching-bracket-bg:
+    #00918a48;\n\t--color-syntax-nonmatching-bracket-bg: #cc484848;\n\n\taccent-color:
+    var(--color-accent);\n\tcolor-scheme: dark;\n}\n\n.emoji[aria-label=\"check mark\"],\n.emoji[aria-label=\"currency
+    exchange\"],\n.emoji[aria-label=\"TOP arrow\"],\n.emoji[aria-label=\"END arrow\"],\n.emoji[aria-label=\"ON!
+    arrow\"],\n.emoji[aria-label=\"SOON arrow\"],\n.emoji[aria-label=\"heavy dollar
+    sign\"],\n.emoji[aria-label=\"copyright\"],\n.emoji[aria-label=\"registered\"],\n.emoji[aria-label=\"trade
+    mark\"],\n.emoji[aria-label=\"multiply\"],\n.emoji[aria-label=\"plus\"],\n.emoji[aria-label=\"minus\"],\n.emoji[aria-label=\"divide\"],\n.emoji[aria-label=\"curly
+    loop\"],\n.emoji[aria-label=\"double curly loop\"],\n.emoji[aria-label=\"wavy
+    dash\"],\n.emoji[aria-label=\"paw prints\"],\n.emoji[aria-label=\"musical note\"],\n.emoji[aria-label=\"musical
+    notes\"] {\n\tfilter: invert(100%) hue-rotate(180deg);\n}\n"
+kind: ConfigMap
+metadata:
+  name: gitea-configmap
+  namespace: gitea

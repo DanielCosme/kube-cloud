@@ -40,10 +40,10 @@ func Apply(stack string) error {
 	var ts []target.Target
 	if stack != "secrets" {
 		ts = []target.Target{
-			target.NewA("kubectl", "apply", "-f", "manifests/"+stack+"/namespace.yaml"),
+			target.NewA("kubectl", "--kubeconfig", "$HOME/.kube/charlie", "apply", "-f", "manifests/"+stack+"/namespace.yaml"),
 		}
 	}
-	ts = append(ts, target.NewA("kubectl", "apply", "-f", "manifests/"+stack))
+	ts = append(ts, target.NewA("kubectl", "--kubeconfig", "$HOME/.kube/charlie", "apply", "-f", "manifests/"+stack))
 	return runSteps("apply manifests", ts)
 }
 

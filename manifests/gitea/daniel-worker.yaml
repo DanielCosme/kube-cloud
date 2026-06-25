@@ -68,7 +68,7 @@ spec:
       restartPolicy: Always
       volumes:
       - configMap:
-          name: gitea-configmap
+          name: daniel-act-runner-configmap
         name: config
       - name: data
         persistentVolumeClaim:

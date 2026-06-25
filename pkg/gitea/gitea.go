@@ -23,7 +23,8 @@ var meta kube.Metadata
 var Namespace = kube.Namespace(services.Gitea)
 var PVC core.PersistentVolumeClaim
 var SRV core.Service
-var CFG core.ConfigMap
+var act_runner_config_map core.ConfigMap
+var gitea_config_map core.ConfigMap
 
 var daniel_runner_meta kube.Metadata
 var DanielRunnerCachePVC core.PersistentVolumeClaim
@@ -36,7 +37,6 @@ var ActionsRunnerPVC core.PersistentVolumeClaim
 func init() {
 	meta = kube.NewMetadata(services.Gitea, Namespace)
 	PVC = meta.PVC()
-	CFG = kube.ConfigFromFile("config.yaml", "config/act_runner/act-runner-host.yaml", meta)
 	SRV = meta.ServiceFrom(kube.ServicePort{
 		Name: "http",
 		Port: services.GiteaPort,
@@ -44,6 +44,7 @@ func init() {
 		Name: "ssh",
 		Port: 22,
 	})
+	gitea_config_map = kube.ConfigFromFile("evergreen.css", "config/gitea/assets/css/evergreen.css", meta)
 
 	action_runner_meta = kube.NewMetadata("actions-act-runner", Namespace)
 	ActionsRunnerPVC = action_runner_meta.PVC()
@@ -54,21 +55,24 @@ func init() {
 	DanielRunnerPVC = daniel_runner_meta.PVC()
 	daniel_other_meta := kube.NewMetadata("daniel-cache-act-runner", Namespace)
 	DanielRunnerCachePVC = daniel_other_meta.PVC()
+
+	act_runner_config_map = kube.ConfigFromFile("config.yaml", "config/act_runner/act-runner-host.yaml", daniel_runner_meta)
 }
 
 func Stack() stack.Stack {
 	giteaManifests := map[string]any{
-		"namespace":         Namespace,
-		"srv":               SRV,
-		"deployment":        StatefulSet(),
-		"ingress":           Ingress(),
-		"config-map":        CFG,
-		"actions-cache-pvc": ActionsRunnerCachePVC,
-		"actions-data-pvc":  ActionsRunnerPVC,
-		"actions-worker":    ActionsActRunnerDeployment(),
-		"daniel-cache-pvc":  DanielRunnerCachePVC,
-		"daniel-data-pvc":   DanielRunnerPVC,
-		"daniel-worker":     DanielActRunnerDeployment(),
+		"namespace":            Namespace,
+		"srv":                  SRV,
+		"deployment":           StatefulSet(),
+		"ingress":              Ingress(),
+		"gitea-configmap":      gitea_config_map,
+		"act-runner-configmap": act_runner_config_map,
+		"actions-cache-pvc":    ActionsRunnerCachePVC,
+		"actions-data-pvc":     ActionsRunnerPVC,
+		"actions-worker":       ActionsActRunnerDeployment(),
+		"daniel-cache-pvc":     DanielRunnerCachePVC,
+		"daniel-data-pvc":      DanielRunnerPVC,
+		"daniel-worker":        DanielActRunnerDeployment(),
 	}
 	return stack.NewStack(services.Gitea, giteaManifests)
 }
@@ -78,27 +82,54 @@ func StatefulSet() apps.StatefulSet {
 		TODO(daniel): Make sure the container has access to the local timezone .
 		/etc/localtime:/etc/localtime:ro
 	*/
+	// TODOS
+	// - Create a CSS Theme.
+	// - Make sure the theme gets mounted and appears in the
+	// 		data folder as ../public/assets/css/kanagawa.css
+	//
+	// Or Should I add a template to mount a different CSS File.
+	//
+	// /data/gitea/public/assets/css/evergreen.css
+	// Mount custom CSS file as a configMap
+	giteaVolume := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "gitea-assets", gitea_config_map.Name)
+	giteaVolume.ConfigMap.Items = []core.KeyToPath{
+		{
+			Key:  "evergreen.css",
+			Path: "evergreen.css",
+		},
+	}
 	podSpec := core.PodSpec{
-		Containers: []core.Container{{
-			Name:          services.Gitea,
-			Image:         services.GiteaImage,
-			Env:           []core.EnvVar{{Name: "TZ", Value: "America/Toronto"}},
-			LivenessProbe: kube.LivenessProbe("/api/healthz", "http"),
-			Ports: []core.ContainerPort{
-				{
-					Name:          "http",
-					ContainerPort: services.GiteaPort,
+		Containers: []core.Container{
+			{
+				Name:          services.Gitea,
+				Image:         services.GiteaImage,
+				Env:           []core.EnvVar{{Name: "TZ", Value: "America/Toronto"}},
+				LivenessProbe: kube.LivenessProbe("/api/healthz", "http"),
+				Ports: []core.ContainerPort{
+					{
+						Name:          "http",
+						ContainerPort: services.GiteaPort,
+					},
+					{
+						Name:          "ssh",
+						ContainerPort: 22,
+					},
 				},
-				{
-					Name:          "ssh",
-					ContainerPort: 22,
+				VolumeMounts: []core.VolumeMount{
+					{
+						Name:      PVC.Name,
+						MountPath: "/data",
+					},
+					{
+						Name:      giteaVolume.Name,
+						SubPath:   "evergreen.css",
+						ReadOnly:  true,
+						MountPath: "/data/gitea/public/assets/css/theme-evergreen.css",
+					},
 				},
 			},
-			VolumeMounts: []core.VolumeMount{{
-				Name:      PVC.Name,
-				MountPath: "/data",
-			}},
-		}},
+		},
+		Volumes: []core.Volume{giteaVolume},
 	}
 	var replicas int32
 	replicas = services.GiteaReplicas
@@ -122,7 +153,7 @@ func ActionsActRunnerDeployment() apps.Deployment {
 	/*
 		NOTE: Perhaps this sould be a statefulSet and not a Deployment.
 	*/
-	configVolume := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "config", CFG.Name)
+	configVolume := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "config", act_runner_config_map.Name)
 	dataVolume := kube.NewVolumeFrom(kube.VolumeSourcePVC, "data", ActionsRunnerPVC.Name)
 	cacheVolume := kube.NewVolumeFrom(kube.VolumeSourcePVC, "cache", ActionsRunnerCachePVC.Name)
 	dockerSocket := core.Volume{
@@ -209,7 +240,7 @@ func DanielActRunnerDeployment() apps.Deployment {
 		NOTE: Perhaps this sould be a statefulSet and not a Deployment.
 		TODO: Make sure the container in this deployment has Go installed. apk add go
 	*/
-	configVolume := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "config", CFG.Name)
+	configVolume := kube.NewVolumeFrom(kube.VolumeSourceConfigMap, "config", act_runner_config_map.Name)
 	dataVolume := kube.NewVolumeFrom(kube.VolumeSourcePVC, "data", DanielRunnerPVC.Name)
 	cacheVolume := kube.NewVolumeFrom(kube.VolumeSourcePVC, "cache", DanielRunnerCachePVC.Name)
 	dockerSocket := core.Volume{

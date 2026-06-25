@@ -9,5 +9,5 @@ data:
       enabled: true
 kind: ConfigMap
 metadata:
-  name: gitea-configmap
+  name: daniel-act-runner-configmap
   namespace: gitea
