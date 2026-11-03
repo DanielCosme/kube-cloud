@@ -1,4 +1,4 @@
-#!/bin/env fish
+#!/usr/bin/env fish
 
 if test -z "$SECRETS_PATH" || test -z "$ENC_SECRETS_PATH" || test -z "$AGE_KEY"
 		echo "missing values in environment values"
